@@ -14,7 +14,6 @@ class Category(models.Model):
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
-
 class Manufacturer(models.Model):
     name = models.CharField(max_length=100, verbose_name='Название')
     country = models.CharField(max_length=100, verbose_name='Страна')
@@ -27,11 +26,9 @@ class Manufacturer(models.Model):
         verbose_name = 'Производитель'
         verbose_name_plural = 'Производители'
 
-
 class Product(models.Model):
     name = models.CharField(max_length=200, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
-    # Добавляем blank=True и null=True для необязательных изображений
     image = models.ImageField(
         upload_to='products/',
         blank=True,
@@ -51,13 +48,13 @@ class Product(models.Model):
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
-        related_name='products',  # Добавляем related_name
+        related_name='products',
         verbose_name='Категория'
     )
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
-        related_name='products',  # Добавляем related_name
+        related_name='products',
         verbose_name='Производитель'
     )
 
@@ -68,12 +65,11 @@ class Product(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
-
 class Cart(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name='cart',  # Добавляем related_name
+        related_name='cart',
         verbose_name='Пользователь'
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
@@ -82,7 +78,6 @@ class Cart(models.Model):
         return f"Корзина пользователя {self.user.username}"
 
     def total_price(self):
-        # Исправляем обработку пустой корзины
         items = self.items.all()
         return sum(item.item_price() for item in items) if items else 0
 
@@ -90,12 +85,11 @@ class Cart(models.Model):
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзины'
 
-
 class CartItem(models.Model):
     cart = models.ForeignKey(
         Cart,
         on_delete=models.CASCADE,
-        related_name='items',  # Изменяем related_name для более ясного доступа
+        related_name='items',
         verbose_name='Корзина'
     )
     product = models.ForeignKey(
@@ -104,7 +98,7 @@ class CartItem(models.Model):
         verbose_name='Товар'
     )
     quantity = models.PositiveIntegerField(
-        default=1,  # Добавляем значение по умолчанию
+        default=1,
         verbose_name='Количество'
     )
 
@@ -115,28 +109,35 @@ class CartItem(models.Model):
         return self.product.price * self.quantity
 
     def clean(self):
-        """Валидация количества товара"""
         if self.quantity > self.product.stock:
             raise ValidationError('Недостаточно товара на складе')
 
     def save(self, *args, **kwargs):
-        """Переопределяем save для автоматической валидации"""
-        self.full_clean()  # Вызываем валидацию перед сохранением
+        self.full_clean()
         super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Элемент корзины'
         verbose_name_plural = 'Элементы корзины'
-        # Добавляем уникальность комбинации корзины и товара
         unique_together = ('cart', 'product')
 
-    # В самый конец models.py добавьте:
-    class Specialty(models.Model):
-        """Временная заглушка для старых импортов"""
-        name = models.CharField(max_length=100)
+# Переносим Order и OrderItem после Product
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    shipping_address = models.TextField()
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
 
-        class Meta:
-            managed = False  # Не создавать таблицу в БД
+    def __str__(self):
+        return f"Order #{self.id} by {self.user.username}"
 
-        def __str__(self):
-            return self.name
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.product.name} ({self.quantity} x {self.price})"
+
