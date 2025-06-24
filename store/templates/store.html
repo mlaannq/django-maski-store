@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>О магазине</title>
+</head>
+<body>
+    <h1>О нашем магазине</h1>
+    <p>Тема лабораторной: Создание и базовая настройка приложений Django</p>
+    <p>Референс: <a href="{{ store_url }}" target="_blank">{{ store_url }}</a></p>
+    <p>{{ store_description }}</p>
+    <a href="{% url 'home' %}">Вернуться на главную</a>
+</body>
+</html>
