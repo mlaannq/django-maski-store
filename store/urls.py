@@ -3,7 +3,6 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
-router.register(r'spec', views.SpecialtyViewSet, basename='specialty')
 
 urlpatterns = [
     path('qualifications/', views.qualifications_list, name='qualifications'),

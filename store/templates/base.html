@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница магазина</title>
+</head>
+<body>
+    <h1>Добро пожаловать в магазин</h1>
+
+    <nav>
+        <ul>
+            <li><a href="{% url 'home' %}">Главная</a></li>
+            <li><a href="{% url 'author' %}">Об авторе</a></li>
+            <li><a href="{% url 'store' %}">О магазине</a></li>
+            <!-- Добавьте эти ссылки -->
+            <li><a href="/api/spec/">Список квалификаций (API)</a></li>
+            <li><a href="/api/spec/1/">Пример квалификации (API)</a></li>
+        </ul>
+    </nav>
+
+    <p>Здесь вы найдете лучшие тематические костюмы.</p>
+
+    <!-- Дополнительный контент -->
+    <section>
+        <h2>Доступные API:</h2>
+        <ul>
+            <li><a href="/api/spec/">Все квалификации</a></li>
+            <li><a href="/api/spec/1/">Квалификация #1</a></li>
+            <li><a href="/api/spec/2/">Квалификация #2</a></li>
+        </ul>
+    </section>
+</body>
+</html>
