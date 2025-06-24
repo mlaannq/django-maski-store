@@ -5,6 +5,7 @@
 </head>
 <body>
     <h1>Информация об авторе</h1>
+    <li><a href="{% url 'qualifications' %}">Квалификации</a></li>
     <p>Лабораторную работу выполнил: {{ author_name }}</p>
     <p>Группа: {{ group }}</p>
     <a href="{% url 'home' %}">Вернуться на главную</a>

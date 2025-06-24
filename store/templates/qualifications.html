@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список квалификаций</title>
+</head>
+<body>
+    <h1>Профессиональные квалификации</h1>
+
+    <ul>
+        {% for spec in specialties %}
+        <li>
+            <h3>{{ spec.title }}</h3>
+            <p>Код: {{ spec.code }}</p>
+            <p>Тип: {{ spec.c_type }}</p>
+            <a href="/api/spec/{{ spec.id }}/">API детали</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'home' %}">На главную</a>
+</body>
+</html>

@@ -1,13 +1,16 @@
-from django.urls import path
-from . import views  # Импортируем представления из текущего приложения
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from . import views
+
+router = DefaultRouter()
+router.register(r'spec', views.SpecialtyViewSet, basename='specialty')
 
 urlpatterns = [
-    # Главная страница (корневой URL)
+    path('qualifications/', views.qualifications_list, name='qualifications'),
     path('', views.home, name='home'),
-
-    # Страница "Об авторе"
     path('author/', views.about_author, name='author'),
-
-    # Страница "О магазине"
     path('store/', views.about_store, name='store'),
+
+    # API endpoints
+    path('api/', include(router.urls)),
 ]
